@@ -1,16 +1,15 @@
 import React from 'react';
-import Icon from '@mdi/react';
-import { mdiStarOutline, mdiStar } from '@mdi/js';
 
 import loadingIMG from '../../assets/loadingIMG.gif';
 
 import './styles.css';
 
 import { usePosts } from '../../contexts/PostsContext';
+import ListItem from '../../components/ListItem';
 
 export default function Home(){
 
-    const { posts, favorites, favoritePost, isFavorite } = usePosts();
+    const { posts, favorites } = usePosts();
     return (
         <div className="main">
            <div className="container">
@@ -20,20 +19,10 @@ export default function Home(){
             posts.length === 0 ? 
             <img src={loadingIMG} alt="" /> :
             posts.map(item => {
-                const isFav = isFavorite(item.id);
                 return (
                     <ul key={item.id}>
                         <li>
-                           <div className="box"  >
-                                <h2>{item.title}</h2>
-                                <p>{item.body}</p>
-                                <div className="favButton" onClick={() => favoritePost(item.id)} >
-                                    <Icon
-                                        path={isFav ? mdiStar : mdiStarOutline}
-                                        size={2}
-                                    />
-                                </div>
-                           </div>
+                           <ListItem  item={item}  isFavoriteList={false}/>
                         </li>
                     </ul>
                 )
@@ -41,12 +30,14 @@ export default function Home(){
             </div>
             <div className="postsContainer">
             <h2>Favorites</h2>
-            {favorites.map(item => {
+            {
+            favorites.length === 0 ?
+            <p>No Favorites</p> :
+            favorites.map(item => {
                 return (
                     <ul key={item.id}>
-                        <li className="box">
-                           <h2>{item.title}</h2>
-                           <p>{item.body}</p>
+                        <li>
+                            <ListItem  item={item}  isFavoriteList={true}/>
                         </li>
                     </ul>
                 )

@@ -2,7 +2,7 @@ import React , { useContext, createContext, useState, useEffect } from 'react';
 
 import api from '../services/api';
 
-interface PostI{
+export interface PostI{
     userId: number;
     id: number;
     title: string;
@@ -14,6 +14,7 @@ interface DataI{
     favorites: PostI[];
     favoritePost: (id: number) => void;
     isFavorite: (id: number) => boolean;
+    removeFavorite: (id: number) => void;
 }
 
 const DataContext = createContext<DataI>({} as DataI);
@@ -48,16 +49,21 @@ const DataProvider:React.FC = ({ children }) => {
     function isFavorite(id: number){
         let value = false;
         for(let i = 0; i < favorites.length; i++){
-            if(posts[i].id === id){
+            if(favorites[i].id === id){
                value = true;
                break;
             }
         }
         return value;
     }
+    function removeFavorite(id: number){
+          let newFavorites = favorites.filter(item => item.id !== id);
+
+          setFavorites(newFavorites);
+    }
 
     return (
-        <DataContext.Provider value={ { posts, favorites, favoritePost, isFavorite } }>
+        <DataContext.Provider value={ { posts, favorites, favoritePost, isFavorite, removeFavorite } }>
               {children}
         </DataContext.Provider>
     )
