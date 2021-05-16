@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from '@mdi/react';
-import { mdiStarOutline, mdiStar, mdiStarRemove } from '@mdi/js';
+import { mdiStarPlusOutline, mdiStar, mdiStarRemove } from '@mdi/js';
 
 import './styles.css';
 
@@ -20,7 +20,7 @@ const ListItem: React.FC<Props> = ({ item, isFavoriteList }) => {
         path = mdiStarRemove;
         onClickFuncion = removeFavorite;
     }else {
-        path = isFavorite(item.id) ? mdiStar : mdiStarOutline;
+        path = isFavorite(item.id) ? mdiStar : mdiStarPlusOutline;
         onClickFuncion = favoritePost;
     }
 
