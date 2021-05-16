@@ -1,4 +1,4 @@
-import React , { useContext, createContext, useState, useEffect } from 'react';
+import React , { useContext, createContext, useState, useEffect,useRef } from 'react';
 
 import api from '../services/api';
 
@@ -23,6 +23,32 @@ const DataProvider:React.FC = ({ children }) => {
     const [posts,setPosts] = useState<PostI[]>([]);
     const [favorites,setFavorites] = useState<PostI[]>([]);
 
+    const isFirstRun = useRef(true);
+
+    function loadFavorites(){
+       let data = localStorage.getItem('favorites');
+
+       if(data){
+        setFavorites(JSON.parse(data));
+       }
+    }
+    function saveFavorites(){
+        localStorage.setItem('favorites',JSON.stringify(favorites));
+    }
+    useEffect(()=> {
+        LoadPosts();
+        loadFavorites();
+   },[]);
+
+   useEffect(() => {
+    if(isFirstRun.current){
+        isFirstRun.current = false;
+    }else{
+        saveFavorites();
+    }
+},[favorites]);
+
+
     async function LoadPosts(){
          const response = await api.get('posts');
 
@@ -30,13 +56,8 @@ const DataProvider:React.FC = ({ children }) => {
 
          setPosts(data);
           
-         console.log(response.data);
+         //console.log(response.data);
     }
-
-    useEffect(()=> {
-         LoadPosts();
-    },[]);
-
     function favoritePost(id: number){
           const item = posts.find(item => item.id === id);
 
@@ -57,9 +78,10 @@ const DataProvider:React.FC = ({ children }) => {
         return value;
     }
     function removeFavorite(id: number){
-          let newFavorites = favorites.filter(item => item.id !== id);
 
-          setFavorites(newFavorites);
+          setFavorites(prev => {
+              return prev.filter(item => item.id !== id);
+          });
     }
 
     return (
